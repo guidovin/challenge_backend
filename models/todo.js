@@ -1,9 +1,10 @@
-const mongoose = require("mongoose");
-
-const campgroundSchema = new mongoose.Schema({
-    name: String,
+const mongoose = require("mongoose"),
+      todoDB = require('../util/dbConnect.js');
+      
+let todoSchema = new mongoose.Schema({
+    completed: {type:Boolean, default: false},
     text: String,
-    added: String, default: Date.now().toString(),
+    added: {type:String, default: Date.now().toString()},
 });
 
-module.exports = mongoose.model("todo", todoSchema);
+module.exports = mongoose.model('todo', todoSchema);

@@ -1,10 +1,11 @@
 {
   "name": "challenge_backend",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "to-do app backend with express and mongoDB",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node app.js",
+    "test": "mocha"
   },
   "author": "Guido Paes Vincent",
   "license": "ISC"
