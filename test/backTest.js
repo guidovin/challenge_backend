@@ -34,12 +34,8 @@ describe('Testing all RESTFULL routes for CRUD on to-dos', () => {
           chai.request(server).post('/todos').send(todo).end((err, res) => {
 
               res.should.have.status(200);
-              res.body.should.be.a('object');
-              res.body.should.have.property('text');
-              res.body.should.have.property('completed');
-              res.body.should.have.property('added');
-              res.body.should.have.property('_id');
-              createdTodoId = res.body._id;
+              res.body.should.be.a('array');
+              createdTodoId = res.body[0]._id;
               done();
           });
       });
@@ -72,18 +68,16 @@ describe('Testing all RESTFULL routes for CRUD on to-dos', () => {
 
         chai.request(server).put('/todos/'+createdTodoId).send(todo).end((err, res) => {
             res.should.have.status(200);
-            res.body.text.should.equal('done with old to-do');
-            res.body.should.have.property('completed');
-            res.body.should.have.property('added');
+            res.body[0].text.should.equal('done with old to-do');
+            res.body[0].should.have.property('completed');
+            res.body[0].should.have.property('added');
             done();
         });
     });
     it('it should not update a to-do with missing fields', (done) => {
         let todo = {
-
             completed: true,
         }
-
         chai.request(server).put('/todos/'+createdTodoId).send(todo).end((err, res) => {
             res.should.have.status(333);
             done();
@@ -96,8 +90,7 @@ describe('Testing all RESTFULL routes for CRUD on to-dos', () => {
             text: 'done with old to-do',
             completed: true,
         }
-        chai.request(server).delete('/todos/'+createdTodoId).end(() =>{});
-        chai.request(server).get('/todos').end((err, res) => {
+        chai.request(server).delete('/todos/'+createdTodoId).end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(0);

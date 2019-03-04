@@ -8,5 +8,19 @@
     "test": "mocha"
   },
   "author": "Guido Paes Vincent",
-  "license": "ISC"
+  "license": "ISC",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "chai": "^4.2.0",
+    "chai-http": "^4.2.1",
+    "express": "^4.16.4",
+    "joi": "^14.3.1",
+    "mongoose": "^5.4.14"
+  },
+  "devDependencies": {
+    "mocha": "^6.0.1"
+  },
+  "keywords": []
 }

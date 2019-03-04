@@ -1,10 +1,10 @@
-const Todo = require('../models/todo.js'),
-      validate = require('../util/validateTodo.js');
+const Todo = require('../models/todo.js');
+const  validateTodo = require('../util/validateTodo.js');
 
 //RESTFULL ROUTES
 function getTodos(req,res){
-  Todo.find({}, (err, todos) =>{
-    if(err) res.send("Failed to retrieve to-do's")
+  Todo.find({userID:req.params.userID}, (err, todos) =>{
+    if(err) res.send("Failed to retrieve to-do's");
     else res.send(todos);
   })
 }
@@ -12,33 +12,46 @@ function getTodos(req,res){
 function deleteTodo(req,res){
     Todo.findOneAndDelete({ _id: req.params.id }, (err, removedDoc) => {
       if(err) res.send('Failed to remove todo with selected ID');
-      else res.send(removedDoc);
+      else Todo.find({userID:req.params.userID} , (err, todos) => {
+
+        if(err) res.send("Failed to retrieve to-do's");
+        else res.send(todos);
+      })
+
     });
 }
-
+//todos/guido todos/:userID
 function createTodo(req,res){
-    const validated = validate(req.body);
+    let validated = validateTodo(req.body);
 
     if(validated.error) {
       res.status(333).send(validated.error.details[0].message);
       return;
     }
+    let userId;
+    if(req.params.userID) userId = req.params.userID;
+    else userId = 'User';
     const todo = new Todo({
       text: req.body.text,
       completed: false,
-      added: Date.now().toString(),
+      added: Date().toString(),
+      userID: userId,
     });
     todo.save((saveErr, newTodo) => {
         if(saveErr){
-          res.status(501).send('Error while saving new todo on the creatTodo route');
-          return
+          res.status(500).send('Error while saving new todo on the creatTodo route');
+          return;
         }
-        res.status(200).send(newTodo);
+        else Todo.find({userID:newTodo.userID} , (err, todos) => {
+
+          if(err) res.send("Failed to retrieve to-do's");
+          else res.status(200).send(todos);
+        })
     });
 }
 
 function getTodo(req,res){
-  Todo.findById(req.params.id, (err, todo) =>{
+  Todo.find({_id:req.params.id, userID:req.params.userID}, (err, todo) =>{
      if(!err){
        res.json(todo);
      }
@@ -47,26 +60,26 @@ function getTodo(req,res){
 }
 
 function updateTodo(req, res){
-  const validated = validate(req.body);
+  let validated = validateTodo(req.body);
 
   if(validated.error) {
     res.status(333).send(validated.error.details[0].message);
     return;
   }
-  Todo.findById(req.params.id, (err, todo) => {
-    todo.text = req.body.text;
+  Todo.findById(req.body._id, (err, todo) => {
     todo.completed = req.body.completed;
-
+    todo.text = req.body.text;
     todo.save((saveErr, updatedTodo) => {
         if(saveErr){
           res.status(500).send('Failed to save updated to-do on update route');
-          return
+          return;
         }
-        res.status(200).send(updatedTodo);
+        else Todo.find({userID:updatedTodo.userID} , (err, todos) => {
+          if(err) res.send("Failed to retrieve to-do's");
+          else res.status(200).send(todos);
+        })
     });
   });
 }
-function getConnection(){
-  return todoDB;
-}
-module.exports = { deleteTodo, getTodos, createTodo, getTodo, updateTodo, getConnection };
+
+module.exports = { deleteTodo, getTodos, createTodo, getTodo, updateTodo };
