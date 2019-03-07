@@ -10,7 +10,7 @@ function getTodos(req,res){
 }
 
 function deleteTodo(req,res){
-    Todo.findOneAndDelete({ _id: req.params.id }, (err, removedDoc) => {
+    Todo.findOneAndDelete({ _id: req.params.id }, (err, removedTodo) => {
       if(err) res.send('Failed to remove todo with selected ID');
       else Todo.find({userID:req.params.userID} , (err, todos) => {
 

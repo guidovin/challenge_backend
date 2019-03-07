@@ -11,12 +11,17 @@ app.use(express.urlencoded({
  }));
 
 
-//RESTFULL routes
 app.get("/", (req, res) => {
     res.redirect("/todos/User");
 });
+app.get("/todos", (req, res) => {
+    res.redirect("/todos/User");
+});
+app.get("/todos/", (req, res) => {
+    res.redirect("/todos/User");
+});
 
-
+//RESTFULL routes
 app.get("/todos/:userID", routes.getTodos);
 app.get("/todos/:userID/:id", routes.getTodo);
 app.get("/todos/:userID/:id/edit", routes.getTodo);

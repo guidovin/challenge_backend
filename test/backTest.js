@@ -19,7 +19,7 @@ describe('Testing all RESTFULL routes for CRUD on to-dos', () => {
           let todo = {
               completed: false
           };
-          chai.request(server).post('/todos').send(todo).end((err, res) => {
+          chai.request(server).post('/todos/user').send(todo).end((err, res) => {
               res.should.have.status(333);
               done();
           });
@@ -31,7 +31,7 @@ describe('Testing all RESTFULL routes for CRUD on to-dos', () => {
               completed: false,
               added: Date.now().toString(),
           }
-          chai.request(server).post('/todos').send(todo).end((err, res) => {
+          chai.request(server).post('/todos/user').send(todo).end((err, res) => {
 
               res.should.have.status(200);
               res.body.should.be.a('array');
@@ -42,7 +42,7 @@ describe('Testing all RESTFULL routes for CRUD on to-dos', () => {
   });
   describe('Testing GET method on route /todos and /todos/id', () => {
       it('it should fetch all to-dos', (done) => {
-        chai.request(server).get('/todos').end((err, res) => {
+        chai.request(server).get('/todos/user').end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(1);
@@ -50,7 +50,7 @@ describe('Testing all RESTFULL routes for CRUD on to-dos', () => {
         });
       });
       it('it should fetch a specific to-do ', (done) => {
-          chai.request(server).get('/todos/'+createdTodoId).end((err, res) => {
+          chai.request(server).get('/todos/user/'+createdTodoId).end((err, res) => {
               res.should.have.status(200);
               res.body.should.have.property('text');
               res.body.should.have.property('completed');
@@ -66,7 +66,7 @@ describe('Testing all RESTFULL routes for CRUD on to-dos', () => {
             completed: true,
         }
 
-        chai.request(server).put('/todos/'+createdTodoId).send(todo).end((err, res) => {
+        chai.request(server).put('/todos/user/'+createdTodoId).send(todo).end((err, res) => {
             res.should.have.status(200);
             res.body[0].text.should.equal('done with old to-do');
             res.body[0].should.have.property('completed');
@@ -78,19 +78,19 @@ describe('Testing all RESTFULL routes for CRUD on to-dos', () => {
         let todo = {
             completed: true,
         }
-        chai.request(server).put('/todos/'+createdTodoId).send(todo).end((err, res) => {
+        chai.request(server).put('/todos/user/'+createdTodoId).send(todo).end((err, res) => {
             res.should.have.status(333);
             done();
         });
     });
   });
-  describe('Testing DELETE method on route /todos/id', () => {
+  describe('Testing DELETE method on route /todos/user/id', () => {
     it('it should remove a specific to-do', (done) => {
         let todo = {
             text: 'done with old to-do',
             completed: true,
         }
-        chai.request(server).delete('/todos/'+createdTodoId).end((err, res) => {
+        chai.request(server).delete('/todos/user/'+createdTodoId).end((err, res) => {
             res.should.have.status(200);
             res.body.should.be.a('array');
             res.body.length.should.be.eql(0);
